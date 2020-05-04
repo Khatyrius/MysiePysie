@@ -1,0 +1,13 @@
+﻿@model MysiePysieService.Models.Teacher
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nauczyciele</h2>
+
+<p>
+    @Html.ActionLink("Dodaj", "New", "Teachers", null, new { @class = "btn btn-primary"} )
+</p>
+
