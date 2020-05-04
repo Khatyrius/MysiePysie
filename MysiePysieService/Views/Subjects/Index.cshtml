@@ -1,0 +1,47 @@
+﻿@model IEnumerable<MysiePysieService.Models.Subject>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Przedmioty</h2>
+
+<p>
+    @Html.ActionLink("Dodaj", "New", "Subjects", null, new { @class = "btn btn-primary" })
+</p>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Punkty ECTS</th>
+            <th>Nauczyciel</th>
+            <th>Edycja</th>
+            <th>Usuwanie</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Jak będzie baza to ten kod będzie wyświetlał dane
+    //foreach (var subject in Model)
+     {
+         <tr>
+             <td>subject.Id</td>
+             <td>subject.Forename</td>
+             <td>subject.Surname</td>
+             <td>subject.Age</td>
+             <td>Html.ActionLink("Edytuj", "Edit", "Subjects", new { id = subject.Id }, null)</td>
+             <button class="btn-link">Usuń</button>
+         </tr>
+     }
+     -->
+
+        <tr>
+            <td>1</td>
+            <td>Matematyka</td>
+            <td>15</td>
+            <td>Marcin Mrugalski</td>
+            <td>@Html.ActionLink("Edytuj", "Edit", "Teachers", null)</td>
+            <td><button class="btn-link">Usuń</button></td>
+        </tr>
+    </tbody>
+</table>

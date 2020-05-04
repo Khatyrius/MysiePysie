@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MysiePysieService.Models.Teacher>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nauczyciele</h2>
+
+<p>
+    @Html.ActionLink("Dodaj", "New", "Teachers", null, new { @class = "btn btn-primary"} )
+</p>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Imię</th>
+            <th>Naziwsko</th>
+            <th>Wiek</th>
+            <th>Edycja</th>
+            <th>Usuwanie</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Jak będzie baza to ten kod będzie wyświetlał dane
+       //foreach (var teacher in Model)
+        {
+            <tr>
+                <td>teacher.Id</td>
+                <td>teacher.Forename</td>
+                <td>teacher.Surname</td>
+                <td>teacher.Age</td>
+                <td>Html.ActionLink("Edytuj", "Edit", "Teachers", new { id = teacher.Id }, null)</td>
+                <button class="btn-link">Usuń</button>
+            </tr>
+        }
+        -->
+
+        <tr>
+            <td>1</td>
+            <td>Marcin</td>
+            <td>Mrugalski</td>
+            <td>45</td>
+            <td>@Html.ActionLink("Edytuj", "Edit", "Teachers", null)</td>
+            <td><button class="btn-link">Usuń</button></td>
+        </tr>
+    </tbody>
+</table>

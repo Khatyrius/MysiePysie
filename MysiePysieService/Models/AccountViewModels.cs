@@ -65,6 +65,25 @@ namespace MysiePysieService.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Nazwa użytkownika")]
+        public string Username { get; set; }
+
+        [Required]
+        [Display(Name = "Imię")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Nazwisko")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Numer telefonu")]
+        public int Phone { get; set; }
+
+        [Display(Name = "Status użytkownika")]
+        public string UserStatus { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Adres e-mail")]
         public string Email { get; set; }
