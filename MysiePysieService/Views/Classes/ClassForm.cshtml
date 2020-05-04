@@ -1,0 +1,19 @@
+﻿@model MysiePysieService.Models.Class
+@{
+    ViewBag.Title = "ClassForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Studenci</h2>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Name)
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Students)
+    @Html.TextBoxFor(m => m.Students, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Students)
+</div>
+<button type="submit" class="btn btn-primary">Zapisz</button>

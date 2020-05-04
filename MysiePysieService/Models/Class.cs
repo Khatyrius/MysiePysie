@@ -11,8 +11,10 @@ namespace MysiePysieService.Models
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "Nazwa")]
         public string Name { get; set; }
 
-        public List<Student> Student { get; set; }
+        [Display(Name = "Studenci")]
+        public List<Student> Students { get; set; }
     }
 }

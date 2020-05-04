@@ -1,5 +1,4 @@
-﻿using MysiePysieService.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,10 +6,9 @@ using System.Web.Mvc;
 
 namespace MysiePysieService.Controllers
 {
-    public class TeachersController : Controller
+    public class ClassesController : Controller
     {
-        // GET: Teachers
-
+        // GET: Classes
         public ViewResult Index()
         {
             return View();
@@ -18,12 +16,12 @@ namespace MysiePysieService.Controllers
 
         public ViewResult New()
         {
-            return View("TeacherForm");
+            return View("ClassForm");
         }
 
         public ViewResult Edit()
         {
-            return View("TeacherForm");
+            return View("ClassForm");
         }
     }
 }

@@ -1,13 +1,16 @@
-﻿using System;
+﻿using MysiePysieService.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace MysiePysieService.Models
+namespace MysiePysieService.ViewModels
 {
-    public class Subject
+    public class SubjectFormViewModel
     {
+        public IEnumerable<Teacher> Teachers { get; set; }
+
         public int Id { get; set; }
 
         [Required]
@@ -18,6 +21,6 @@ namespace MysiePysieService.Models
         public int ECTSpoints { get; set; }
 
         [Display(Name = "Nauczyciel")]
-        public Teacher Teacher { get; set; }
+        public int TeacherId { get; set; }
     }
 }
