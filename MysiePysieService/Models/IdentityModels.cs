@@ -11,7 +11,7 @@ namespace MysiePysieService.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [Required]
         public string FirstName { get; set; }
@@ -34,6 +34,11 @@ namespace MysiePysieService.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D70E3225-E09D-4751-8E19-DD69FF054357}</ProjectGuid>
+    <ProjectGuid>{3A498E6B-57D1-47AE-A11A-035B60457A9B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MysiePysieService.Tests</RootNamespace>
@@ -25,7 +25,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -97,20 +96,14 @@
     <Content Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Features\ClassesControl.feature" />
-    <None Include="Features\StudentControl.feature" />
-    <None Include="Features\SubjectControl.feature" />
-    <None Include="Features\TeacherControl.feature" />
-    <None Include="Features\User.feature" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MysiePysieService\MysiePysieService.csproj">
-      <Project>{E8EA898E-73CC-485C-A963-A95FEBB33E2F}</Project>
+      <Project>{61BB4FE7-A533-4905-ACDD-F8ABB046ED73}</Project>
       <Name>MysiePysieService</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
