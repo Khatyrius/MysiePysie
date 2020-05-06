@@ -66,7 +66,7 @@ namespace MysiePysieService.Models
     {
         [Required]
         [Display(Name = "Nazwa użytkownika")]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [Display(Name = "Imię")]

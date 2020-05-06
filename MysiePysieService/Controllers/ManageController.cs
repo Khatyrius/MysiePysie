@@ -32,9 +32,9 @@ namespace MysiePysieService.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -333,7 +333,7 @@ namespace MysiePysieService.Controllers
             base.Dispose(disposing);
         }
 
-#region Pomocnicy
+        #region Pomocnicy
         // Służy do ochrony XSRF podczas dodawania logowań zewnętrznych
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +384,6 @@ namespace MysiePysieService.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }
