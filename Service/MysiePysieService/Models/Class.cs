@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace MysiePysieService.Models
@@ -10,6 +11,6 @@ namespace MysiePysieService.Models
     {
         [Key] public int id { get; set; }
         [Required] public string name { get; set; }
-        public List<Student> students { get; set; }
+        public ICollection<Student> students { get; set; }
     }
 }

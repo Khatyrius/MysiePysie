@@ -810,20 +810,20 @@ components:
       properties:
         forename:
           type: string
-          description: Updated forename of a student
+          description: Updated forename of a user
         surname:
           type: string
-          description: Updated surname of a studnet
+          description: Updated surname of a user
         class:
           type: string
-          description: Updated class of a student
+          description: Updated class of a user
         age:
           type: integer
-          description: Updated age of a student
+          description: Updated age of a user
           format: int64
-        status:
+        role:
           type: string
-          description: Updated status of a studnet
+          description: Updated role of user
     body_1:
       type: object
       properties:

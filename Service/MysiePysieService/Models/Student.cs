@@ -14,5 +14,7 @@ namespace MysiePysieService.Models
 
         [Required] public int age { get; set; }
         public string status { get; set; }
+        
+        public Class @class { get; set;}
     }
 }

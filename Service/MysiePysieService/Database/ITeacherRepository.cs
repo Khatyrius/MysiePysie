@@ -9,6 +9,5 @@ namespace MysiePysieService.Data
 {
     public interface ITeacherRepository : IGenericRepository<Teacher>
     {
-        Task<List<Teacher>> FindBySubjectTaught(string subject);
     }
 }

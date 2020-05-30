@@ -1,0 +1,101 @@
+﻿@model IEnumerable<MysiePysieMVC.Models.Student>
+
+@{
+    ViewBag.Title = "Students";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Students</title>
+</head>
+<body>
+    <!-- Save data for futher use -->
+    @{ 
+        var className = ViewData["className"];
+        var classId = ViewData["classId"];
+    }
+
+    <h2>Klasa @className</h2>
+    <p>
+        @Html.ActionLink("Dodaj studenta",
+                         "AddStudent",
+                         "Classes",
+                         new { classId = classId },
+                         new { @class = "btn btn-primary" })
+    </p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.forename)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.surname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.age)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.status)
+                </th>
+                <th>
+                    Edytuj Studenta
+                </th>
+                <th>
+                    Usuwanie
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.forename)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edytuj",
+                                     "Edit",
+                                     "Students",
+                                     new { studentId = item.id },
+                                     null)
+                </td>
+                <td>
+                    @Html.ActionLink("Usuń z klasy",
+                                     "RemoveStudentFromClass",
+                                     "Classes",
+                                     new { classId = item.@class.id, studentId = item.id },
+                                     null)
+                </td>
+            </tr>
+                <tr>
+                    <td>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</body>
+</html>

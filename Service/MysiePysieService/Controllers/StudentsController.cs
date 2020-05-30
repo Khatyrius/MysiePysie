@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MysiePysieService.Data;
 using MysiePysieService.DTO;
@@ -12,7 +13,9 @@ using MysiePysieService.Models;
 
 namespace MysiePysieService.Controllers
 {
+    [Authorize]
     [Route("students")]
+    [ApiController]
     public class StudentsController : Controller
     {
         private IStudentRepository _studentRepository;
@@ -26,8 +29,8 @@ namespace MysiePysieService.Controllers
         public async Task<IActionResult> GetStudents()
         {
             IList<Student> students = await _studentRepository.GetAll();
-            
-            if(students != null)
+
+            if (students.Count != 0)
             {
                 return Ok(students);
             }
@@ -37,10 +40,15 @@ namespace MysiePysieService.Controllers
 
         // GET students/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> getStudent(int id)
+        public async Task<IActionResult> GetStudent(int? id)
         {
-            var student = await _studentRepository.GetById(id);
-            if(student != null)
+            if (!id.HasValue)
+            {
+                return BadRequest("Id must be given");
+            }
+
+            var student = await _studentRepository.GetById(id.Value);
+            if (student != null)
             {
                 return Ok(student);
             }
@@ -53,22 +61,24 @@ namespace MysiePysieService.Controllers
         public async Task<IActionResult> AddStudent([FromBody]StudentDTO student)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest("Invalid input");
-            }
 
-            if(student.id != 0)
-            {
-                return BadRequest("Id is auto incremented");
-            }
+            if (student.age < 1)
+                return BadRequest("Invalid input");
 
             Student newStudent = new Student()
             {
                 forename = student.forename,
                 surname = student.surname,
                 age = student.age,
-                status = student.status
+                status = student.status,
+                @class = student.@class
             };
+
+            if (_studentRepository.CheckIfExists(newStudent))
+            {
+                return Conflict("Student already exists");
+            }
 
             bool created = await _studentRepository.Add(newStudent);
 
@@ -76,65 +86,68 @@ namespace MysiePysieService.Controllers
             {
                 return Created("", newStudent);
             }
-            
+
             return Conflict();
         }
 
-        // PUT /students/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id,[FromBody]StudentDTO student)
+        // PUT /students
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudent([FromBody]StudentDTO student)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest("Invalid input");
-            }
+
+            if (student.age < 1)
+                return BadRequest("Invalid input");
 
             Student updatedStudent = new Student()
             {
-                id = id,
+                id = student.id,
                 forename = student.forename,
                 surname = student.surname,
                 age = student.age,
-                status = student.status
+                status = student.status,
+                @class = student.@class
             };
 
             bool updated = await _studentRepository.Update(updatedStudent);
 
             if (updated)
             {
-                return Created("", updatedStudent);
+                return Ok(updatedStudent);
             }
 
             return Conflict();
         }
 
-        // DELETE students
-        [HttpDelete]
-        public async Task<IActionResult> DeleteStudent([FromBody]StudentDTO student)
+        // DELETE students/id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStudent(int? id)
         {
-            if (!ModelState.IsValid)
+            if (!id.HasValue)
             {
-                return BadRequest("Invalid input");
+                return BadRequest("Id must be given");
             }
 
-            Student deleteStudent = new Student()
-            {
-                id = student.id,
-                forename = student.forename,
-                surname = student.surname,
-                age = student.age,
-                status = student.status
-            };
+            bool deleted = await _studentRepository.Delete(id.Value);
 
-            bool deleted = await _studentRepository.Delete(deleteStudent);
-
-            if (!deleted)
+            if (deleted)
             {
-                return NotFound("Student not found");
+                return Ok("Student deleted");
             }
 
-            return Ok("Student deleted");
-
+            return NotFound("Student not found");
         }
-    }
+
+        [HttpGet("lastid")]
+        public async Task<IActionResult> GetLastId() {
+            var id = _studentRepository.GetLast();
+                if (id != 0)
+                {
+                    return Ok(id);
+                }
+
+            return NotFound();
+            }
+        }
 }

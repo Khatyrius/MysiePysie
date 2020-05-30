@@ -1,69 +1,125 @@
 ﻿Feature: StudentControl
-	I want to be able to add,delete, update and view students
+	In order to perform CRUD operations on students
+	As the web api client
+	I want to be able to Create, Update, Delete, and List Students
 
-Background: We're on students page, where we want to be able to view, update, add and delete students
+Scenario Outline: Create a new student with full data
+	Given I am an authorized user
+	And I create a new student with full info
+	| Forename | Surname  | Age | Status |
+	| Bartosz  | Musielak | 23  | Coding |
 
-Scenario: We want to add a student having admin role
-	Given I'm on a students page
-		And I'm logged in with "admin" role
-	When I fill in students <forename>, <surname>, <age> and <status>
-		And I click on add button
-	Then The student should be added to the database
-		And All data should match the input
-	But the student shouldn't be added if he already exists
+	When The client puts a request for student creation
+	Then a Created status code should be returned
+		And the created student info should be returned
 
-Scenario: We want to add a student whithout admin role
-	Given I'm on a students page
-		And I'm logged in without "admin" role
-	When I fill in students <forename>, <surname>, <age> and <status>
-		And I click on add button
-	Then An error should be returned
-		And the student shouldn't be added to the database
+Scenario Outline: Create a new student with missing data
+	Given I am an authorized user
+	And I create a new student with missing info
+	| Forename | Surname  | Age | Status |
+	|          | Musielak | 23  | Coding |
 
-Scenario: Get a list of all students
-	Given I'm on a students page
-	Then A list of all students should appears on page:
-	Examples: 
-	| ID | Imie       | Nazwisko     | Wiek | Status      |
-	| 1  | "Tomek"    | "Stachowiak" | "24" | "Semestr 7" |
-	| 2  | "Bartosz   | "Musielak"   | "23" | "Semestr 6" |
-	| 3  | "Krystian" | "Sarul"      | "22" | "Semestr 2" |
+	When The client puts a request for student creation
+	Then a BadRequest status code should be returned
 
-Scenario: We want to update an student with admin role
-	Given I'm on a students page
-	And I'm logged in with "admin" role
-	When I fill in Students <id>
-		And I fill in new <age> which i wished to change
-		And Click on update student
-	Then Student is updated
-		And New age should match input age
+Scenario Outline: Create a new student while unauthorized
+	Given I create a new student with full info
+	| Forename | Surname  | Age | Status |
+	| Bartosz  | Musielak | 23  | Coding |
+	When The client puts a request for student creation
+	Then a Unauthorized status code should be returned
 
-Scenario: We want to update an student without admin role
-	Given I'm on a students page
-	And I'm logged in without "admin" role
-	When I fill in Students <id>
-		And I fill in new <age> which i wished to change
-		And Click on update student
-	Then Student shouldn't be updated
+Scenario Outline: Create a student while a student already exists
+	Given I am an authorized user
+		And There's a an existing student in database
+		| Forename | Surname  | Age | Status |
+		| Bartosz  | Musielak | 23  | Coding |
 
-Scenario: Get a single student
-	Given I'm on a students page
-	When I fill in students <id>
-		And Click on get a single student
-	Then A single student object matching the id should be returned
+	When I create a new student with same forename, surname and age
+	| Forename | Surname  | Age | Status |
+	| Bartosz  | Musielak | 23  | Living |
+		And The client puts a request for student creation
+	Then a Conflict status code should be returned
 
-Scenario: Delete a student with admin role
-	Given I'm on a students page
-		And I'm logged in with "admin" role
-	When I fill in student <id>
-		And click on delete student
-	Then Student no longer exists in database
-
-Scenario: Delete a student without admin role
-	Given I'm on a students page
-		And I'm logged in without "admin" role
-	When I fill in Students <id>
-		And click on delete student
-	Then Student shouldn't be deleted and still exist in database
-
+Scenario Outline: Return an existing student
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And I have the students id
+	When The client puts a request for a student with given id
+	Then a Ok status code should be returned
+		And student with existing student data is returned
 	
+Scenario Outline: Return a non existing student
+	Given I am an authorized user
+		And I have the students id
+	When The client puts a request for a student with given id
+	Then a Not Found status code should be returned
+
+Scenario Outline: Return a list of existing students
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And There's a an existing student in database
+			| Forename | Surname | Age | Status		|
+			| Szymon   | Sabik   | 22  | Androiding |
+		And There's a an existing student in database
+			| Forename | Surname | Age | Status |
+			| Maciej   | Stachów | 22  | LoLing |
+	When The client puts a request for a student list
+	Then a Ok status code should be returned
+		And a list of existing students is returned
+
+Scenario Outline: Update an existing student
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And I have the students id
+	When The client puts a request for a student update
+		| Forename | Surname  | Age | Status      |
+		| Bartosz  | Musielak | 26  | Still Alive |
+	Then a Ok status code should be returned
+		And the updated student info should be returned
+
+Scenario Outline: Update users age with a string
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And I have the students id
+	When The client puts a request for a student update
+		| Forename | Surname  | Age         | Status      |
+		| Bartosz  | Musielak | Na pewno ma | Still Alive | 
+	Then a BadRequest status code should be returned
+
+Scenario Outline: Update an exisitng student with another student data
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And There's a an existing student in database
+			| Forename | Surname | Age | Status  |
+			| Maciej   | Sabik   | 23  | Andorid |
+		And I have the students id
+	When The client puts a request for a student update
+		| Forename | Surname | Age | Status  |
+		| Maciej   | Sabik   | 23  | Android |
+	Then a Conflict status code should be returned
+
+Scenario Outline: Delete an existing student
+	Given I am an authorized user
+		And There's a an existing student in database
+			| Forename | Surname  | Age | Status |
+			| Bartosz  | Musielak | 23  | Living |
+		And I have the students id
+	When The client puts a request for a student deletion
+	Then a Ok status code should be returned
+
+Scenario Outline: Delete a non existing student
+	Given I am an authorized user
+		And I have the students id
+	When The client puts a request for a student deletion
+	Then a Not Found status code should be returned

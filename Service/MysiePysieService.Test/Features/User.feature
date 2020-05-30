@@ -1,41 +1,65 @@
 ﻿Feature: User
-	In order to make register, login
-	And validate user permissions
+	In order to register, login and authorize user actions
+	I want to be able to create, update and delete an user
 
-Scenario: Create a new user
-	Given I'm on register page
-	And I have filled in the data
-	When I press register user
-	And all data has valid form
-	Then New user is created
+Scenario Outline: Create a new user
+	Given I create a new user
+		| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+		| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+	When The client puts a request for account creation
+	Then a Created status code should be returned
+		And the created user should be returned
 
-Scenario: Create users from list
-	Given I have a list of users to add
-	When i click on add users from list
-	Then all users from the list are created
+Scenario Outline: Login user
+	Given There's an existing user in database
+		| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+		| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+	When The client puts a request for a login
+	Then a Ok status code should be returned
+		And a bearer token should be returned
 
-Scenario: User wants to log in
-	Given I'm on login page
-	And user info is filled in
-	When I click on login button
-	Then User is logged in
+Scenario Outline: Update user info
+	Given I am an authorized user
+		And There's an existing user in database
+			| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+			| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+		And i have the clients id
+	When The client puts a request for user update
+		| FirstName   | LastName    | Email        | Password | Phone     | userStatus |
+		| updatedtest | updatedtest | test@test.pl | 12345    | 123456489 | 2          |
+	Then a Ok status code should be returned
+		And the updated user id and username should match existing user
 
-Scenario: User wants to log out
-	Given I'm on any page
-	When I click logout button
-	Then User gets logged out and redirected to home site
+Scenario Outline: Delete user
+	Given I am an authorized user
+		And There's an existing user in database
+			| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+			| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+		And i have the clients id
+	When The client puts a request for user deletion
+	Then a Ok status code should be returned
 
-Scenario: Delete a user
-	Given I'm on users page
-	And i have a list of users
-	And admin status
-	When I click on delete user
-	Then user gets deleted
+Scenario Outline: Get a single user wit user id
+	Given I am an authorized user
+		And There's an existing user in database
+			| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+			| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+		And i have the clients id
+	When The client puts a request for a single user
+	Then a Ok status code should be returned
+		And the existing user is returned
 
-Scenario: Update a user
-	Given I'm on users page
-	And i have a list of users
-	When I click on update user
-	And I fill in the data
-	Then User gets updated
-	
+Scenario Outline: Get a list of users
+		Given I am an authorized user
+			And There's an existing user in database
+				| Username  | FirstName | LastName | Email          | Password | Phone     | userStatus |
+				| Pantescik | test      | test     | test@test.test | 1234     | 123456789 | 1          |
+			And There's an existing user in database
+				| Username | FirstName | LastName | Email           | Password | Phone     | userStatus |
+				| Pandrugi | Test2     | Test2    | tes2t@test.test | 1234     | 123456789 | 1          |
+			And There's an existing user in database
+				| Username     | FirstName | LastName | Email             | Password | Phone     | userStatus |
+				| PannieTescik | Nietest   | Nietest  | nietest@test.test | 1234     | 123456789 | 1          |
+		When The client puts a request for a student list
+		Then a Ok status code should be returned
+			And a list of existing users is returned

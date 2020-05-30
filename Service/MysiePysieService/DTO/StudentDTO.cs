@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MysiePysieService.Models;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace MysiePysieService.DTO
@@ -16,5 +17,7 @@ namespace MysiePysieService.DTO
         public int age { get; set; }
 
         public string status { get; set; }
+
+        public Class @class { get; set; }
     }
 }

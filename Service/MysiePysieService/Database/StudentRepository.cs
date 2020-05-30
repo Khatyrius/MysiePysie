@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MysiePysieService.Database;
 using MysiePysieService.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MysiePysieService.Data
 {
@@ -17,63 +18,86 @@ namespace MysiePysieService.Data
         {
             _context = context;
         }
-        
+
         public async Task<bool> Add(Student student)
         {
-            await _context.Students.AddAsync(student);
-            await _context.SaveChangesAsync();
-            return true;
+            if (!CheckIfExists(student.id))
+            {
+                await _context.Students.AddAsync(student);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> Delete(Student student)
         {
-            try
-            {
-                var studentExists = await EntityFrameworkQueryableExtensions.FirstAsync(_context.Students, s => s.id == student.id);
-                if (studentExists == null)
+                if (CheckIfExists(student.id))
                 {
-                    return false;
+                    _context.Students.Remove(_context.Students.Single(s => s.id == student.id));
+                    await _context.SaveChangesAsync();
+                    return true;
                 }
 
-                _context.Students.Remove(_context.Students.Single(s => s.id == student.id));
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch(Exception e)
-            {
                 return false;
-            }
         }
 
         public async Task<bool> Update(Student student)
         {
-            try
-            {
-                _context.Students.Update(student);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
+                if (CheckIfExists(student.id) && !CheckIfExists(student))
+                {
+                    _context.Students.Update(student);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
                 return false;
-            }
         }
 
         public async Task<Student> GetById(int id)
         {
-            try
-            {
-                return await EntityFrameworkQueryableExtensions.FirstAsync(_context.Students, x => x.id == id);
-            }
-            catch(Exception e)
-            {
-                return null;
-            }
+                return await _context.Students.Include(s => s.@class).FirstOrDefaultAsync(s => s.id == id);
         }
 
         public async Task<List<Student>> GetAll()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students.Include(s => s.@class).ToListAsync();
+        }
+
+        public int GetLast()
+        {
+            var students = _context.Students.ToListAsync();
+            int id = students.Result.Select(x => x.id).Max();
+            return id;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+                if (CheckIfExists(id))
+                {
+                    _context.Students.Remove(_context.Students.Single(s => s.id == id));
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+        }
+
+        public bool CheckIfExists(int id)
+        {
+            return _context.Students.Any(e => e.id == id);
+        }
+
+        public bool CheckIfExists(Student entity)
+        {
+            var query = from st in _context.Students
+                        where st.forename == entity.forename &&
+                        st.surname == entity.surname &&
+                        st.age == entity.age
+                        select st;
+
+            return query.Any();
         }
     }
 }

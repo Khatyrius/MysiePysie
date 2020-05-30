@@ -12,6 +12,7 @@ namespace MysiePysieService.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Student>().HasOne(c => c.@class).WithMany(s => s.students);
             base.OnModelCreating(modelBuilder);
         }
 

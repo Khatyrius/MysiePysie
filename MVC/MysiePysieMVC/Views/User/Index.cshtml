@@ -1,0 +1,76 @@
+﻿@model IEnumerable<MysiePysieMVC.Models.UserModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Użytkownicy</h2>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.username)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.firstname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.lastname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.userStatus)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.username)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.firstname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.lastname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.phone)
+        </td>
+            @if(item.userStatus == 666)
+            {
+                <td>
+                    Admin
+                </td>
+            }else if(item.userStatus == 1){
+                <td>
+                    Active
+                </td>
+            }
+            else
+            {
+                <td>
+                    Blocked
+                </td>
+            }
+        <td>
+            @Html.ActionLink("Usuń",
+                            "Delete",
+                            "User",
+                            new { userId = item.id },
+                            null)
+        </td>
+    </tr>
+}
+
+</table>

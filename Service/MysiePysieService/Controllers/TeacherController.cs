@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MysiePysieService.Data;
@@ -10,7 +11,9 @@ using MysiePysieService.Models;
 
 namespace MysiePysieService.Controllers
 {
+    [Authorize]
     [Route("teachers")]
+    [ApiController]
     public class TeacherController : Controller
     {
         private ITeacherRepository _teacherRepository;
@@ -21,11 +24,11 @@ namespace MysiePysieService.Controllers
         }
         // GET: /teachers
         [HttpGet]
-        public async Task<IActionResult> GetStudents()
+        public async Task<IActionResult> GetTeachers()
         {
             var teachers = await _teacherRepository.GetAll();
 
-            if (teachers != null)
+            if (teachers.Count != 0)
             {
                 return Ok(teachers);
             }
@@ -46,7 +49,7 @@ namespace MysiePysieService.Controllers
             return NotFound("Teacher not found");
         }
 
-        // POST /students
+        // POST /teachers
         [HttpPost]
         public async Task<IActionResult> AddTeacher([FromBody]TeacherDTO teacher)
         {
@@ -55,10 +58,8 @@ namespace MysiePysieService.Controllers
                 return BadRequest("Invalid input");
             }
 
-            if (teacher.id != 0)
-            {
-                return BadRequest("Id is auto incremented");
-            }
+            if (teacher.age < 1)
+                return BadRequest("Invalid input");
 
             Teacher newTeacher = new Teacher()
             {
@@ -66,6 +67,11 @@ namespace MysiePysieService.Controllers
                 surname = teacher.surname,
                 age = teacher.age
             };
+
+            if (_teacherRepository.CheckIfExists(newTeacher))
+            {
+                return Conflict("Teacher already exists");
+            }
 
             bool created = await _teacherRepository.Add(newTeacher);
 
@@ -77,18 +83,21 @@ namespace MysiePysieService.Controllers
             return Conflict();
         }
 
-        // PUT /teachers/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTeacher(int id, [FromBody]TeacherDTO teacher)
+        // PUT /teachers
+        [HttpPut]
+        public async Task<IActionResult> UpdateTeacher([FromBody]TeacherDTO teacher)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid input");
             }
 
+            if (teacher.age < 1)
+                return BadRequest("Invalid input");
+
             Teacher updatedTeacher = new Teacher()
             {
-                id = id,
+                id = teacher.id,
                 forename = teacher.forename,
                 surname = teacher.surname,
                 age = teacher.age,
@@ -98,38 +107,42 @@ namespace MysiePysieService.Controllers
 
             if (updated)
             {
-                return Created("", updatedTeacher);
+                return Ok(updatedTeacher);
             }
 
             return Conflict();
         }
 
         // DELETE teachers
-        [HttpDelete]
-        public async Task<IActionResult> DeleteStudent([FromBody]TeacherDTO teacher)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTeacher(int? id)
         {
-            if (!ModelState.IsValid)
+            if (!id.HasValue)
             {
-                return BadRequest("Invalid input");
+                return BadRequest("Id must be given");
             }
 
-            Teacher deleteTeacher = new Teacher()
-            {
-                id = teacher.id,
-                forename = teacher.forename,
-                surname = teacher.surname,
-                age = teacher.age,
-            };
+            bool deleted = await _teacherRepository.Delete(id.Value);
 
-            bool deleted = await _teacherRepository.Delete(deleteTeacher);
-
-            if (!deleted)
+            if (deleted)
             {
-                return NotFound("Teacher not found");
+                return Ok("Teacher deleted");
             }
 
-            return Ok("Teacher deleted");
+            return NotFound("Teacher not found");
+        }
 
+        [HttpGet("lastid")]
+        public async Task<IActionResult> GetLastId()
+        {
+            var id = _teacherRepository.GetLast();
+            if (id != 0)
+            {
+                return Ok(id);
+            }
+
+            return NotFound();
         }
     }
 }
+

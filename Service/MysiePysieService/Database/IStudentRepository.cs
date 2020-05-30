@@ -9,6 +9,5 @@ namespace MysiePysieService.Data
 {
     public interface IStudentRepository : IGenericRepository<Student>
     {
-
     }
 }

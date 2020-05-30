@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "AddStudentToClass";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var students = (List<SelectListItem>)ViewData["StudentList"];
+    var classId = ViewData["classId"];
+    var className = ViewData["className"];
+}
+
+<h2>Dodaj studenta do klasy @className</h2>
+
+@using (Html.BeginForm("AddStudentToClass", "Classes", FormMethod.Post, new { @class = "ui large form" }))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal">
+    <hr />
+    <h3>Wybierz studenta</h3>
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.DropDownList("studentId", students, new { @class = "ui large form" })
+            @Html.Hidden("classId", classId)
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Dodaj" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+

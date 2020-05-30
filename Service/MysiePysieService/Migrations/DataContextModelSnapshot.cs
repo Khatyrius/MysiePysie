@@ -38,10 +38,10 @@ namespace MysiePysieService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("Classid")
+                    b.Property<int>("age")
                         .HasColumnType("int");
 
-                    b.Property<int>("age")
+                    b.Property<int?>("classid")
                         .HasColumnType("int");
 
                     b.Property<string>("forename")
@@ -57,7 +57,7 @@ namespace MysiePysieService.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Classid");
+                    b.HasIndex("classid");
 
                     b.ToTable("Students");
                 });
@@ -146,9 +146,9 @@ namespace MysiePysieService.Migrations
 
             modelBuilder.Entity("MysiePysieService.Models.Student", b =>
                 {
-                    b.HasOne("MysiePysieService.Models.Class", null)
+                    b.HasOne("MysiePysieService.Models.Class", "class")
                         .WithMany("students")
-                        .HasForeignKey("Classid");
+                        .HasForeignKey("classid");
                 });
 
             modelBuilder.Entity("MysiePysieService.Models.Subject", b =>

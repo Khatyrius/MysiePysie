@@ -1,0 +1,74 @@
+﻿@model IEnumerable<MysiePysieMVC.Models.Subject>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Przedmioty</h2>
+
+<p>
+    @Html.ActionLink("Dodaj przedmiot", "New", "Subjects", null, new { @class = "btn btn-primary" })
+</p>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ECTSpoints)
+            </th>
+            <th>
+                 Nauczyciel
+            </th>
+            <th>
+                Edytcja
+            </th>
+            <th>
+                Usuwanie
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ECTSpoints)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.teacher.forename) @Html.DisplayFor(modelItem => item.teacher.surname)
+                </td>
+                <td>
+                    @Html.ActionLink("Edytuj",
+                         "Edit",
+                         "Subjects",
+                         new { subjectId = item.id },
+                         null)
+                </td>
+                <td>
+                    @Html.ActionLink("Usun",
+                         "DeleteSubject",
+                         "Subjects",
+                         new { subjectId = item.id },
+                         null)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

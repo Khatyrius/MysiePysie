@@ -1,45 +1,59 @@
 ﻿Feature: TeacherControl
-	I want to be able to add,delete, update and view Teachers
+	In order to perform CRUD operations on teachers
+	As the web api client
+	I want to be able to Create, Update, Delete, and List Teachers
 
-Scenario: Add a tacher
-	Given I'm on a tachers add page
-	And I clicked on add tacher button
-	When All tacher info is filled in
-	And I press add
-	Then The tacher should be added to the database
-	And All data should match the input
+Scenario Outline: Create a teacher
+	Given I am an authorized user
+		And I create a new teacher with full info
+			| Forename | Surname   | Age |
+			| Pan      | Algerbyk | 54  |
+	When The client puts a request for teacher creation
+	Then a Created status code should be returned
 
-Scenario: Get a list of all tachers
-	Given I'm on tachers page
-	When I click on show all tachers
-	Then A list of tachers appears on page:
-	| ID | Imie | Nazwiko | Wiek |
-	| "  | ""   | ""      | ""   |
+Scenario Outline: Get an existing teacher
+	Given I am an authorized user
+		And There's an existing teacher in database
+			| Forename | Surname  | Age |
+			| Pan      | Algerbyk | 54  |
+		And i have the teachers id
+	When The client puts a request for a teacher with given id
+	Then a Ok status code should be returned
+		And the existing teacher info should match the given info
 
-Scenario: Update a tacher 
-	Given I'm on a tachers update page
-	And I have perrmision to update a tacher
-	When I fill in the data
-	And I click on update
-	Then Teacher is updated
-	And All data matches the input
+Scenario Outline: Get a list of all teachers
+	Given I am an authorized user
+		And There's an existing teacher in database
+			| Forename | Surname  | Age |
+			| Pan      | Algerbyk | 54  |
+		And There's an existing teacher in database
+			| Forename | Surname | Age |
+			| Pan      | Muzyk   | 54  |
+		And There's an existing teacher in database
+			| Forename | Surname   | Age |
+			| Pan      | Matematyk | 54  |
+	When The client puts a request for a teacher list
+	Then a Ok status code should be returned
+		And the existing teachers list should match the exisitng teachers
 
-Scenario: Find teacher by subject taught
-	Given I'm on a teachers page
-	When I click on find teacher by subject
-	And I fill in subject name
-	Then a teacher who teaches that subject is returned
+Scenario Outline: Update an teacher 
+	Given I am an authorized user
+		And There's an existing teacher in database
+			| Forename | Surname  | Age |
+			| Pan      | Algerbyk | 54  |
+		And i have the teachers id
+	When The client puts a request for teacher update
+		| Forename | Surname  | Age |
+		| Pan      | Algebryk | 55 |
+	Then a Ok status code should be returned
+		And the returned teacher should match updated teacher info
 
-Scenario: Get a single tacher
-	Given I'm on a tachers page
-	When I click on show a single tacher
-	And I fill in tacher id
-	Then A single tacher object matching the id should be returned
 
-Scenario: Delete a tacher
-	Given I'm on a tachers page
-	And I have a list of tachers open
-	When I click on delete teacher
-	Then Teacher no longer exists in database
-
-	
+Scenario Outline: Delete an existing teacher
+	Given I am an authorized user
+		And There's an existing teacher in database
+			| Forename | Surname  | Age |
+			| Pan      | Algerbyk | 54  |
+		And i have the teachers id
+	When The client puts a request for teacher deletion with given id
+	Then a Ok status code should be returned
